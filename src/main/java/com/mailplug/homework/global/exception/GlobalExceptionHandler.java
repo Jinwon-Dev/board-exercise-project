@@ -21,11 +21,11 @@ public class GlobalExceptionHandler {
         return buildResponse(exception.getErrorType());
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<CommonResponse> handleRuntimeException(final RuntimeException exception) {
-
-        return buildResponse(ErrorType.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<CommonResponse> handleRuntimeException(final RuntimeException exception) {
+//
+//        return buildResponse(ErrorType.INTERNAL_SERVER_ERROR);
+//    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {

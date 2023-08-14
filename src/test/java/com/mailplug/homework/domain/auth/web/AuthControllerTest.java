@@ -10,6 +10,8 @@ import com.mailplug.homework.domain.auth.web.dto.SignUpRequest;
 import com.mailplug.homework.domain.auth.web.dto.SignUpResponse;
 import com.mailplug.homework.domain.customization.MemberCustomization;
 import com.mailplug.homework.domain.member.persistence.Member;
+import com.mailplug.homework.global.resolver.MemberIdResolver;
+import com.mailplug.homework.global.security.AuthorizationExtractor;
 import com.mailplug.homework.global.security.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,6 +21,7 @@ import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.BDDMockito.given;
@@ -27,6 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = AuthController.class)
+@SpyBean({AuthorizationExtractor.class, MemberIdResolver.class})
 class AuthControllerTest {
 
     @Autowired
