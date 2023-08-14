@@ -1,6 +1,7 @@
 package com.mailplug.homework.domain.board.persistence;
 
 import com.mailplug.homework.domain.BaseTimeEntity;
+import com.mailplug.homework.domain.board.BoardType;
 import com.mailplug.homework.domain.post.persistence.Post;
 import jakarta.persistence.*;
 import lombok.Builder;
