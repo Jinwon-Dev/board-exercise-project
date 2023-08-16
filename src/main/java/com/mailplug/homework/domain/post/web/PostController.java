@@ -7,10 +7,7 @@ import com.mailplug.homework.global.response.CommonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -27,5 +24,12 @@ public class PostController {
 
         final var response = postService.writePost(request, memberId);
         return ResponseEntity.status(CREATED).body(CommonResponse.newInstance(response));
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<CommonResponse> readPost(@PathVariable final Long postId) {
+
+        final var response = postService.readPost(postId);
+        return ResponseEntity.ok(CommonResponse.newInstance(response));
     }
 }

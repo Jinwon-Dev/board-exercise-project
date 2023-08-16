@@ -17,6 +17,9 @@ public enum ErrorType {
     // BOARD
     BOARD_TYPE_INVALID("BOARD-001", "게시판 종류가 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
 
+    // POST
+    POST_NOT_FOUND("POST-001", "게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // COMMON
     DTO_PARAMETER_INVALID("DTO-001", "DTO의 파라미터가 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
     INTERNAL_SERVER_ERROR("SERVER-001", "서버 내부적 오류입니다.", HttpStatus.INTERNAL_SERVER_ERROR);
