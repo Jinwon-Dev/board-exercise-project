@@ -62,4 +62,38 @@ class PostRepositoryTest {
             });
         }
     }
+
+    @Nested
+    @DisplayName("게시글 조회")
+    class ReadPost {
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 게시글 단건 조회에 성공한다.")
+        void read_post(final Member member) {
+
+            // given
+            memberRepository.save(member);
+
+            final Board board = boardRepository.save(new Board(BoardType.NOTICE));
+
+            final var post = new Post(
+                    "title",
+                    "content",
+                    member,
+                    board
+            );
+            postRepository.save(post);
+
+            // when
+            final var findPost = postRepository.findById(post.getId()).get();
+
+            // then
+            assertSoftly(softly -> {
+                softly.assertThat(findPost.getTitle()).isEqualTo(post.getTitle());
+                softly.assertThat(findPost.getContent()).isEqualTo(post.getContent());
+            });
+        }
+
+    }
 }

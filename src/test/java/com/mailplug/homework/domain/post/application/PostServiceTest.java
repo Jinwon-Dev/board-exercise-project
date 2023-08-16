@@ -6,8 +6,10 @@ import com.mailplug.homework.domain.board.persistence.Board;
 import com.mailplug.homework.domain.board.persistence.BoardRepository;
 import com.mailplug.homework.domain.member.persistence.Member;
 import com.mailplug.homework.domain.member.persistence.MemberRepository;
+import com.mailplug.homework.domain.post.persistence.Post;
 import com.mailplug.homework.domain.post.persistence.PostRepository;
 import com.mailplug.homework.domain.post.web.dto.WritePostRequest;
+import com.mailplug.homework.global.exception.post.PostNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -91,6 +93,39 @@ class PostServiceTest {
             assertSoftly(softly -> softly.assertThatThrownBy(() -> new WritePostRequest(
                             "title", "content", BoardType.valueOf("    ")))
                     .isInstanceOf(IllegalArgumentException.class));
+        }
+    }
+
+    @Nested
+    @DisplayName("게시글 조회")
+    class ReadPost {
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 단건이 조회되고 조회수가 1 증가한다.")
+        void read_post(final Post post) {
+
+            // given
+            given(postRepository.findById(any())).willReturn(Optional.of(post));
+
+            // when
+            final var response = postService.readPost(post.getId());
+
+            // then
+            assertSoftly(softly -> softly.assertThat(response.views()).isEqualTo(1L));
+        }
+
+        @Test
+        @DisplayName("요청시 존재하지 않는 게시글이라면 실패한다.")
+        void read_post_not_exist_post() {
+
+            // given
+
+            // when
+
+            // then
+            assertSoftly(softly -> softly.assertThatThrownBy(() -> postService.readPost(1L))
+                    .isInstanceOf(PostNotFoundException.class));
         }
     }
 }
