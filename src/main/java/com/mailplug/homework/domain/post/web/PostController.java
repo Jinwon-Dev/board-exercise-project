@@ -1,11 +1,13 @@
 package com.mailplug.homework.domain.post.web;
 
+import com.mailplug.homework.domain.board.BoardType;
 import com.mailplug.homework.domain.post.application.PostService;
 import com.mailplug.homework.domain.post.web.dto.WritePostRequest;
 import com.mailplug.homework.global.resolver.MemberId;
 import com.mailplug.homework.global.response.CommonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,22 @@ public class PostController {
     public ResponseEntity<CommonResponse> readPost(@PathVariable final Long postId) {
 
         final var response = postService.readPost(postId);
+        return ResponseEntity.ok(CommonResponse.newInstance(response));
+    }
+
+    @GetMapping
+    public ResponseEntity<CommonResponse> readPostList(@RequestParam(name = "name") final String boardType,
+                                                       final Pageable pageable) {
+
+        final var response = postService.readPostList(BoardType.valueOf(boardType.toUpperCase()), pageable);
+        return ResponseEntity.ok(CommonResponse.newInstance(response));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<CommonResponse> readPostListByPostTitle(@RequestParam(name = "keyword") final String keyword,
+                                                                  final Pageable pageable) {
+
+        final var response = postService.readPostListByPostTitle(keyword, pageable);
         return ResponseEntity.ok(CommonResponse.newInstance(response));
     }
 }

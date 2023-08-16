@@ -1,11 +1,13 @@
 package com.mailplug.homework.domain.post.application;
 
+import com.mailplug.homework.domain.board.BoardType;
 import com.mailplug.homework.domain.board.persistence.Board;
 import com.mailplug.homework.domain.board.persistence.BoardRepository;
 import com.mailplug.homework.domain.member.persistence.Member;
 import com.mailplug.homework.domain.member.persistence.MemberRepository;
 import com.mailplug.homework.domain.post.persistence.Post;
 import com.mailplug.homework.domain.post.persistence.PostRepository;
+import com.mailplug.homework.domain.post.web.dto.ReadPostListResponse;
 import com.mailplug.homework.domain.post.web.dto.ReadPostResponse;
 import com.mailplug.homework.domain.post.web.dto.WritePostRequest;
 import com.mailplug.homework.domain.post.web.dto.WritePostResponse;
@@ -13,6 +15,8 @@ import com.mailplug.homework.global.exception.board.BoardExceptionExecutor;
 import com.mailplug.homework.global.exception.member.MemberExceptionExecutor;
 import com.mailplug.homework.global.exception.post.PostExceptionExecutor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,5 +62,23 @@ public class PostService {
         post.increaseView();
 
         return postMapper.entityToReadPostResponse(post);
+    }
+
+    /**
+     * 게시판별 게시글 목록 조회
+     */
+    public Page<ReadPostListResponse> readPostList(final BoardType boardType, final Pageable pageable) {
+
+        final Page<Post> posts = postRepository.findAllPostsByBoardName(boardType, pageable);
+        return postMapper.entityToReadPostListResponse(posts);
+    }
+
+    /**
+     * 게시글 제목으로 게시글 목록 조회
+     */
+    public Page<ReadPostListResponse> readPostListByPostTitle(final String keyword, final Pageable pageable) {
+
+        final Page<Post> posts = postRepository.findAllPostsByPostTitle(keyword, pageable);
+        return postMapper.entityToReadPostListResponse(posts);
     }
 }
