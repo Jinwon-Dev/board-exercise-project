@@ -10,6 +10,7 @@ import com.mailplug.homework.domain.member.persistence.Member;
 import com.mailplug.homework.domain.member.persistence.MemberRepository;
 import com.mailplug.homework.domain.post.persistence.Post;
 import com.mailplug.homework.domain.post.persistence.PostRepository;
+import com.mailplug.homework.domain.post.web.dto.UpdatePostRequest;
 import com.mailplug.homework.domain.post.web.dto.WritePostRequest;
 import com.mailplug.homework.global.security.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
@@ -24,8 +25,7 @@ import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -250,6 +250,79 @@ class PostIntegrationTest extends IntegrationTest {
                             .mapToObj(i -> new Post("title" + i, "content", member, board))
                             .toList()
             );
+        }
+    }
+
+    @Nested
+    @DisplayName("게시글 수정")
+    class UpdatePost {
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 게시글이 정상적으로 수정되어 반영된다.")
+        void update_post(final Member member) throws Exception {
+
+            // given
+            final Member savedMember = memberRepository.save(member);
+            final Board board = boardRepository.save(new Board(BoardType.FREE));
+
+            final String accessToken = jwtTokenProvider.createAccessToken(savedMember.getId());
+
+            final Post post = new Post(
+                    "title",
+                    "content",
+                    member,
+                    board
+            );
+            postRepository.save(post);
+
+            final var request = new UpdatePostRequest(
+                    "test",
+                    "test"
+            );
+
+            // when
+            final var perform = mockMvc.perform(patch("/posts/{postId}", post.getId())
+                    .contentType(APPLICATION_JSON)
+                    .header("Authorization", "bearer " + accessToken)
+                    .content(objectMapper.writeValueAsString(request)));
+
+            // then
+            perform.andExpect(status().isOk());
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 작성자가 아니라면 수정에 실패한다.")
+        void update_post_not_writer(final Member member) throws Exception {
+
+            // given
+            memberRepository.save(member);
+            final Board board = boardRepository.save(new Board(BoardType.FREE));
+
+            final String accessToken = jwtTokenProvider.createAccessToken(100L);
+
+            final Post post = new Post(
+                    "title",
+                    "content",
+                    member,
+                    board
+            );
+            postRepository.save(post);
+
+            final var request = new UpdatePostRequest(
+                    "test",
+                    "test"
+            );
+
+            // when
+            final var perform = mockMvc.perform(patch("/posts/{postId}", post.getId())
+                    .contentType(APPLICATION_JSON)
+                    .header("Authorization", "bearer " + accessToken)
+                    .content(objectMapper.writeValueAsString(request)));
+
+            // then
+            perform.andExpect(status().isForbidden());
         }
     }
 }

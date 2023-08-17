@@ -10,8 +10,10 @@ import com.mailplug.homework.domain.member.persistence.Member;
 import com.mailplug.homework.domain.member.persistence.MemberRepository;
 import com.mailplug.homework.domain.post.persistence.Post;
 import com.mailplug.homework.domain.post.persistence.PostRepository;
+import com.mailplug.homework.domain.post.web.dto.UpdatePostRequest;
 import com.mailplug.homework.domain.post.web.dto.WritePostRequest;
 import com.mailplug.homework.global.exception.post.PostNotFoundException;
+import com.mailplug.homework.global.exception.post.WriterNotSameException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -173,6 +175,30 @@ class PostServiceTest {
                 softly.assertThat(response.getContent().get(2).title().contains("title")).isTrue();
             });
         }
+    }
 
+    @Nested
+    @DisplayName("게시글 수정")
+    class UpdatePost {
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("게시글 수정시 작성자가 아니라면 수정에 실패한다.")
+        void update_post_not_writer(final Post post) {
+
+            // given
+            given(postRepository.findById(any())).willReturn(Optional.of(post));
+
+            final var request = new UpdatePostRequest(
+                    "title",
+                    "content"
+            );
+
+            // when
+
+            // then
+            assertSoftly(softly -> softly.assertThatThrownBy(() -> postService.updatePost(post.getId(), 100L, request))
+                    .isInstanceOf(WriterNotSameException.class));
+        }
     }
 }

@@ -4,9 +4,7 @@ import autoparams.AutoSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mailplug.homework.domain.board.BoardType;
 import com.mailplug.homework.domain.post.application.PostService;
-import com.mailplug.homework.domain.post.web.dto.ReadPostListResponse;
-import com.mailplug.homework.domain.post.web.dto.ReadPostResponse;
-import com.mailplug.homework.domain.post.web.dto.WritePostRequest;
+import com.mailplug.homework.domain.post.web.dto.*;
 import com.mailplug.homework.global.resolver.MemberIdResolver;
 import com.mailplug.homework.global.security.AuthorizationExtractor;
 import com.mailplug.homework.global.security.JwtTokenProvider;
@@ -29,8 +27,7 @@ import java.util.stream.IntStream;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PostController.class)
@@ -164,6 +161,78 @@ class PostControllerTest {
             // then
             perform.andExpect(status().isOk());
         }
+    }
 
+    @Nested
+    @DisplayName("게시글 수정")
+    class UpdatePost {
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 게시글이 정상적으로 수정된다.")
+        void update_post(final UpdatePostResponse response, final Long postId) throws Exception {
+
+            // given
+            final String accessToken = jwtTokenProvider.createAccessToken(1L);
+
+            final var request = new UpdatePostRequest(
+                    "title",
+                    "content"
+            );
+
+            given(postService.updatePost(any(), any(), any())).willReturn(response);
+
+            // when
+            final var perform = mockMvc.perform(patch("/posts/{postId}", postId)
+                    .contentType(APPLICATION_JSON)
+                    .header("Authorization", "bearer " + accessToken)
+                    .content(objectMapper.writeValueAsString(request)));
+
+            // then
+            perform.andExpect(status().isOk());
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 제목과 본문은 필수다.")
+        void update_post_invalid_parameter(final Long postId) throws Exception {
+
+            // given
+            final String accessToken = jwtTokenProvider.createAccessToken(1L);
+
+            final var request = new UpdatePostRequest(
+                    "    ",
+                    null
+            );
+
+            // when
+            final var perform = mockMvc.perform(patch("/posts/{postId}", postId)
+                    .contentType(APPLICATION_JSON)
+                    .header("Authorization", "bearer " + accessToken)
+                    .content(objectMapper.writeValueAsString(request)));
+
+            // then
+            perform.andExpect(status().isBadRequest());
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 로그인 상태가 아니라면 실패한다.")
+        void update_post_not_login(final Long postId) throws Exception {
+
+            // given
+            final var request = new UpdatePostRequest(
+                    "title",
+                    "content"
+            );
+
+            // when
+            final var perform = mockMvc.perform(patch("/posts/{postId}", postId)
+                    .contentType(APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)));
+
+            // then
+            perform.andExpect(status().isUnauthorized());
+        }
     }
 }
