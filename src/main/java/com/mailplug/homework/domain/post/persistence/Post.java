@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.mailplug.homework.global.exception.post.PostExceptionExecutor.WriterForbidden;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -16,7 +17,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 public class Post extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = IDENTITY)
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -59,5 +61,18 @@ public class Post extends BaseTimeEntity {
      */
     public void increaseView() {
         this.views++;
+    }
+
+    /**
+     * 게시글 수정 비즈니스 로직
+     */
+    public void update(final Long memberId, final String title, final String content) {
+
+        if (memberId.equals(this.member.getId())) {
+            this.title = title;
+            this.content = content;
+        } else {
+            throw WriterForbidden();
+        }
     }
 }

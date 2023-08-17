@@ -19,6 +19,7 @@ public enum ErrorType {
 
     // POST
     POST_NOT_FOUND("POST-001", "게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    WRITER_FORBIDDEN("POST-002", "해당 게시글을 작성한 작성자가 아닙니다.", HttpStatus.FORBIDDEN),
 
     // COMMON
     DTO_PARAMETER_INVALID("DTO-001", "DTO의 파라미터가 유효하지 않습니다.", HttpStatus.BAD_REQUEST),

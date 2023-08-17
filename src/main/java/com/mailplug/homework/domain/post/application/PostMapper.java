@@ -3,10 +3,7 @@ package com.mailplug.homework.domain.post.application;
 import com.mailplug.homework.domain.board.persistence.Board;
 import com.mailplug.homework.domain.member.persistence.Member;
 import com.mailplug.homework.domain.post.persistence.Post;
-import com.mailplug.homework.domain.post.web.dto.ReadPostListResponse;
-import com.mailplug.homework.domain.post.web.dto.ReadPostResponse;
-import com.mailplug.homework.domain.post.web.dto.WritePostRequest;
-import com.mailplug.homework.domain.post.web.dto.WritePostResponse;
+import com.mailplug.homework.domain.post.web.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -54,5 +51,10 @@ public class PostMapper {
                 post.getCreateAt(),
                 post.getViews()
         ));
+    }
+
+    UpdatePostResponse entityToUpdatePostResponse(final Post post) {
+
+        return new UpdatePostResponse(post.getId(), post.getTitle(), post.getContent());
     }
 }

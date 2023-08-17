@@ -5,4 +5,8 @@ public class PostExceptionExecutor {
     public static PostNotFoundException PostNotFound() {
         return new PostNotFoundException();
     }
+
+    public static WriterNotSameException WriterForbidden() {
+        return new WriterNotSameException();
+    }
 }

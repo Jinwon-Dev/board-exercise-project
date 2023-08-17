@@ -7,10 +7,7 @@ import com.mailplug.homework.domain.member.persistence.Member;
 import com.mailplug.homework.domain.member.persistence.MemberRepository;
 import com.mailplug.homework.domain.post.persistence.Post;
 import com.mailplug.homework.domain.post.persistence.PostRepository;
-import com.mailplug.homework.domain.post.web.dto.ReadPostListResponse;
-import com.mailplug.homework.domain.post.web.dto.ReadPostResponse;
-import com.mailplug.homework.domain.post.web.dto.WritePostRequest;
-import com.mailplug.homework.domain.post.web.dto.WritePostResponse;
+import com.mailplug.homework.domain.post.web.dto.*;
 import com.mailplug.homework.global.exception.board.BoardExceptionExecutor;
 import com.mailplug.homework.global.exception.member.MemberExceptionExecutor;
 import com.mailplug.homework.global.exception.post.PostExceptionExecutor;
@@ -80,5 +77,23 @@ public class PostService {
 
         final Page<Post> posts = postRepository.findAllPostsByPostTitle(keyword, pageable);
         return postMapper.entityToReadPostListResponse(posts);
+    }
+
+    /**
+     * 게시글 수정
+     */
+    @Transactional
+    public UpdatePostResponse updatePost(final Long postId, final Long memberId, final UpdatePostRequest request) {
+
+        final Post post = postRepository.findById(postId)
+                .orElseThrow(PostExceptionExecutor::PostNotFound);
+
+        post.update(
+                memberId,
+                request.title(),
+                request.content()
+        );
+
+        return postMapper.entityToUpdatePostResponse(post);
     }
 }
