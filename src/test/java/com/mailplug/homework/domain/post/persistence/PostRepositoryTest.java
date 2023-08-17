@@ -12,7 +12,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
@@ -95,5 +99,61 @@ class PostRepositoryTest {
             });
         }
 
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("게시판별 게시글 목록 조회시 게시판에 맞는 게시글 목록이 페이징되어 조회된다.")
+        void read_posts_by_paging(final Member member) {
+
+            // given
+            memberRepository.save(member);
+
+            final Board board = boardRepository.save(new Board(BoardType.INQUIRY));
+
+            savePostsForTest(member, board);
+
+            // when
+            final Pageable pageable = PageRequest.of(0, 5);
+            final var posts = postRepository.findAllPostsByBoardName(BoardType.INQUIRY, pageable);
+
+            // then
+            assertSoftly(softly -> {
+                softly.assertThat(posts.getContent().get(0).getTitle()).isEqualTo("title9");
+                softly.assertThat(posts.getContent().get(0).getBoard().getName()).isEqualTo(BoardType.INQUIRY);
+                softly.assertThat(posts.getSize()).isEqualTo(5);
+                softly.assertThat(posts.getTotalPages()).isEqualTo(2);
+            });
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("제목으로 게시글을 검색하면 키워드가 제목에 포함된 게시글이 검색된다.")
+        void read_posts_by_post_title(final Member member) {
+
+            // given
+            memberRepository.save(member);
+
+            final Board board = boardRepository.save(new Board(BoardType.INQUIRY));
+
+            savePostsForTest(member, board);
+
+            // when
+            final Pageable pageable = PageRequest.of(0, 5);
+            final var posts = postRepository.findAllPostsByPostTitle("title", pageable);
+
+            // then
+            assertSoftly(softly -> {
+                softly.assertThat(posts.getSize()).isEqualTo(5);
+                softly.assertThat(posts.getTotalPages()).isEqualTo(2);
+            });
+        }
+
+        private void savePostsForTest(final Member member, final Board board) {
+
+            postRepository.saveAll(
+                    IntStream.range(0, 10)
+                            .mapToObj(i -> new Post("title" + i, "content", member, board))
+                            .toList()
+            );
+        }
     }
 }

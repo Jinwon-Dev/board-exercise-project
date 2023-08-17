@@ -1,9 +1,11 @@
 package com.mailplug.homework.domain.post.application;
 
 import autoparams.AutoSource;
+import autoparams.customization.Customization;
 import com.mailplug.homework.domain.board.BoardType;
 import com.mailplug.homework.domain.board.persistence.Board;
 import com.mailplug.homework.domain.board.persistence.BoardRepository;
+import com.mailplug.homework.domain.customization.PostCustomization;
 import com.mailplug.homework.domain.member.persistence.Member;
 import com.mailplug.homework.domain.member.persistence.MemberRepository;
 import com.mailplug.homework.domain.post.persistence.Post;
@@ -19,7 +21,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
@@ -127,5 +132,47 @@ class PostServiceTest {
             assertSoftly(softly -> softly.assertThatThrownBy(() -> postService.readPost(1L))
                     .isInstanceOf(PostNotFoundException.class));
         }
+
+        @ParameterizedTest
+        @AutoSource
+        @Customization(PostCustomization.class)
+        @DisplayName("게시판별 게시글 목록 조회시 게시판에 속한 게시글 목록이 페이징되어 조회된다.")
+        void read_posts_by_paging(final List<Post> posts) {
+
+            // given
+            final var pagedPosts = new PageImpl<>(posts);
+            given(postRepository.findAllPostsByBoardName(any(), any())).willReturn(pagedPosts);
+
+            // when
+            final var pageable = PageRequest.of(0, 3);
+            final var response = postService.readPostList(BoardType.FREE, pageable);
+
+            // then
+            assertSoftly(softly -> softly.assertThat(response.getSize()).isEqualTo(3));
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        @Customization(PostCustomization.class)
+        @DisplayName("제목으로 게시글을 검색하면 키워드가 제목에 포함된 게시글이 검색된다.")
+        void read_posts_by_post_title(final List<Post> posts) {
+
+            // given
+            final var pagedPosts = new PageImpl<>(posts);
+            given(postRepository.findAllPostsByPostTitle(any(), any())).willReturn(pagedPosts);
+
+            // when
+            final var pageable = PageRequest.of(0, 3);
+            final var response = postService.readPostListByPostTitle("title", pageable);
+
+            // then
+            assertSoftly(softly -> {
+                softly.assertThat(response.getSize()).isEqualTo(3);
+                softly.assertThat(response.getContent().get(0).title().contains("title")).isTrue();
+                softly.assertThat(response.getContent().get(1).title().contains("title")).isTrue();
+                softly.assertThat(response.getContent().get(2).title().contains("title")).isTrue();
+            });
+        }
+
     }
 }

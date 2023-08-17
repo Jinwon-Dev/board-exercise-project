@@ -4,6 +4,7 @@ import autoparams.AutoSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mailplug.homework.domain.board.BoardType;
 import com.mailplug.homework.domain.post.application.PostService;
+import com.mailplug.homework.domain.post.web.dto.ReadPostListResponse;
 import com.mailplug.homework.domain.post.web.dto.ReadPostResponse;
 import com.mailplug.homework.domain.post.web.dto.WritePostRequest;
 import com.mailplug.homework.global.resolver.MemberIdResolver;
@@ -18,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -124,10 +127,43 @@ class PostControllerTest {
 
             // when
             final var perform = mockMvc.perform(get("/posts/{postId}", 1L)
-                            .contentType(APPLICATION_JSON));
+                    .contentType(APPLICATION_JSON));
 
             // then
             perform.andExpect(status().isOk());
         }
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("게시판별 게시글 목록 조회시 게시판에 속한 게시글 목록이 페이징되어 조회된다.")
+        void read_posts_by_paging(final List<ReadPostListResponse> responses) throws Exception {
+
+            // given
+            given(postService.readPostList(any(), any())).willReturn(new PageImpl<>(responses));
+
+            // when
+            final var perform = mockMvc.perform(get("/posts?name=free")
+                    .contentType(APPLICATION_JSON));
+
+            // then
+            perform.andExpect(status().isOk());
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("제목으로 게시글을 검색하면 키워드가 제목에 포함된 게시글이 검색된다.")
+        void read_posts_by_post_title(final List<ReadPostListResponse> responses) throws Exception {
+
+            // given
+            given(postService.readPostList(any(), any())).willReturn(new PageImpl<>(responses));
+
+            // when
+            final var perform = mockMvc.perform(get("/posts/search?keyword=title")
+                    .contentType(APPLICATION_JSON));
+
+            // then
+            perform.andExpect(status().isOk());
+        }
+
     }
 }

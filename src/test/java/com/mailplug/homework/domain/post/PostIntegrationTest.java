@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -180,11 +181,11 @@ class PostIntegrationTest extends IntegrationTest {
             ));
 
             // when
-            final var result = mockMvc.perform(get("/posts/{postId}", post.getId())
+            final var perform = mockMvc.perform(get("/posts/{postId}", post.getId())
                     .contentType(APPLICATION_JSON));
 
             // then
-            result.andExpect(status().isOk())
+            perform.andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.views").value(1L));
         }
 
@@ -195,11 +196,60 @@ class PostIntegrationTest extends IntegrationTest {
             // given
 
             // when
-            final var result = mockMvc.perform(get("/posts/{postId}", 1000L)
+            final var perform = mockMvc.perform(get("/posts/{postId}", 1000L)
                     .contentType(APPLICATION_JSON));
 
             // then
-            result.andExpect(status().isNotFound());
+            perform.andExpect(status().isNotFound());
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("게시판별 게시글 목록 조회시 게시판에 속한 게시글 목록이 페이징되어 조회된다.")
+        void read_posts_by_paging(final Member member) throws Exception {
+
+            // given
+            memberRepository.save(member);
+            final Board board = boardRepository.save(new Board(BoardType.FREE));
+
+            savePostsForTest(member, board);
+
+            // when
+            final var perform = mockMvc.perform(get("/posts?name=free")
+                    .contentType(APPLICATION_JSON));
+
+            // then
+            perform.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content.size()", is(5)));
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("제목으로 게시글을 검색하면 키워드가 제목에 포함된 게시글이 검색된다.")
+        void read_posts_by_post_title(final Member member) throws Exception {
+
+            // given
+            memberRepository.save(member);
+            final Board board = boardRepository.save(new Board(BoardType.FREE));
+
+            savePostsForTest(member, board);
+
+            // when
+            final var perform = mockMvc.perform(get("/posts/search?keyword=title")
+                    .contentType(APPLICATION_JSON));
+
+            // then
+            perform.andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data.content.size()", is(5)));
+        }
+
+        private void savePostsForTest(final Member member, final Board board) {
+
+            postRepository.saveAll(
+                    IntStream.range(0, 10)
+                            .mapToObj(i -> new Post("title" + i, "content", member, board))
+                            .toList()
+            );
         }
     }
 }
