@@ -55,6 +55,14 @@ public class PostMapper {
 
     UpdatePostResponse entityToUpdatePostResponse(final Post post) {
 
-        return new UpdatePostResponse(post.getId(), post.getTitle(), post.getContent());
+        return new UpdatePostResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getContent());
+    }
+
+    DeletePostResponse entityToDeletePostResponse(final Post post) {
+
+        return new DeletePostResponse(post.getId());
     }
 }

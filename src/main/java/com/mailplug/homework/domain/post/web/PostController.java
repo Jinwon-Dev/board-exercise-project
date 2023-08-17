@@ -60,4 +60,12 @@ public class PostController {
         final var response = postService.updatePost(postId, memberId, request);
         return ResponseEntity.ok(CommonResponse.newInstance(response));
     }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<CommonResponse> deletePost(@PathVariable("postId") final Long postId,
+                                                     @MemberId final Long memberId) {
+
+        final var response = postService.deletePost(postId, memberId);
+        return ResponseEntity.ok(CommonResponse.newInstance(response));
+    }
 }
