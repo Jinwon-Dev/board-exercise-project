@@ -30,8 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceTest {
@@ -200,5 +199,28 @@ class PostServiceTest {
             assertSoftly(softly -> softly.assertThatThrownBy(() -> postService.updatePost(post.getId(), 100L, request))
                     .isInstanceOf(WriterNotSameException.class));
         }
+    }
+
+    @Nested
+    @DisplayName("게시글 삭제")
+    class DeletePost {
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 작성자가 아니라면 삭제에 실패한다.")
+        void delete_post(final Post post) {
+
+            // given
+            given(postRepository.findById(any())).willReturn(Optional.of(post));
+
+            // when
+
+            // then
+            assertSoftly(softly -> {
+                softly.assertThatThrownBy(() -> postService.deletePost(post.getId(), 1000L))
+                        .isInstanceOf(WriterNotSameException.class);
+            });
+        }
+
     }
 }

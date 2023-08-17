@@ -325,4 +325,65 @@ class PostIntegrationTest extends IntegrationTest {
             perform.andExpect(status().isForbidden());
         }
     }
+
+    @Nested
+    @DisplayName("게시글 삭제")
+    class DeletePost {
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 게시글이 정상적으로 삭제된다.")
+        void delete_post(final Member member) throws Exception {
+
+            // given
+            final Member savedMember = memberRepository.save(member);
+            final Board board = boardRepository.save(new Board(BoardType.FREE));
+
+            final String accessToken = jwtTokenProvider.createAccessToken(savedMember.getId());
+
+            final Post post = new Post(
+                    "title",
+                    "content",
+                    member,
+                    board
+            );
+            postRepository.save(post);
+
+            // when
+            final var perform = mockMvc.perform(delete("/posts/{postId}", post.getId())
+                    .contentType(APPLICATION_JSON)
+                    .header("Authorization", "bearer " + accessToken));
+
+            // then
+            perform.andExpect(status().isOk());
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 작성자가 아니라면 게시글 삭제에 실패한다.")
+        void delete_post_not_writer(final Member member) throws Exception {
+
+            // given
+            final Member savedMember = memberRepository.save(member);
+            final Board board = boardRepository.save(new Board(BoardType.FREE));
+
+            final String accessToken = jwtTokenProvider.createAccessToken(1000L);
+
+            final Post post = new Post(
+                    "title",
+                    "content",
+                    member,
+                    board
+            );
+            postRepository.save(post);
+
+            // when
+            final var perform = mockMvc.perform(delete("/posts/{postId}", post.getId())
+                    .contentType(APPLICATION_JSON)
+                    .header("Authorization", "bearer " + accessToken));
+
+            // then
+            perform.andExpect(status().isForbidden());
+        }
+    }
 }

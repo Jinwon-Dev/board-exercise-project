@@ -156,4 +156,35 @@ class PostRepositoryTest {
             );
         }
     }
+
+    @Nested
+    @DisplayName("게시글 삭제")
+    class DeletePost {
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 요청한 게시글이 정상적으로 삭제된다.")
+        void delete_post(final Member member) {
+
+            // given
+            memberRepository.save(member);
+
+            final Board board = boardRepository.save(new Board(BoardType.FREE));
+
+            final Post post = postRepository.save(
+                    new Post(
+                            "title",
+                            "content",
+                            member,
+                            board
+                    )
+            );
+
+            // when
+            postRepository.delete(post);
+
+            // then
+            assertSoftly(softly -> softly.assertThat(postRepository.findAll().size()).isEqualTo(0));
+        }
+    }
 }

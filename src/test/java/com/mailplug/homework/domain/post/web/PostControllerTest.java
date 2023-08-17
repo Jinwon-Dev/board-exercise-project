@@ -235,4 +235,43 @@ class PostControllerTest {
             perform.andExpect(status().isUnauthorized());
         }
     }
+
+    @Nested
+    @DisplayName("게시글 삭제")
+    class DeletePost {
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 요청한 게시글이 삭제된다.")
+        void delete_post(final DeletePostResponse response, final Long postId) throws Exception {
+
+            // given
+            final String accessToken = jwtTokenProvider.createAccessToken(1L);
+
+            given(postService.deletePost(any(), any())).willReturn(response);
+
+            // when
+            final var perform = mockMvc.perform(delete("/posts/{postId}", postId)
+                    .contentType(APPLICATION_JSON)
+                    .header("Authorization", "bearer " + accessToken));
+
+            // then
+            perform.andExpect(status().isOk());
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        @DisplayName("요청시 로그인 상태가 아니라면 실패한다.")
+        void delete_post_not_login(final Long postId) throws Exception {
+
+            // given
+
+            // when
+            final var perform = mockMvc.perform(delete("/posts/{postId}", postId)
+                    .contentType(APPLICATION_JSON));
+
+            // then
+            perform.andExpect(status().isUnauthorized());
+        }
+    }
 }
