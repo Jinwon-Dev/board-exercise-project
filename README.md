@@ -37,7 +37,7 @@
 
 ***현재는 92%의 테스트 커버리지를 기록중입니다.***
 
-![img.png](img.png)
+<img width="1145" alt="image" src="https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/ec4a34fd-7cc1-41d2-8844-f02baf789744">
 
 </br>
 </br>
