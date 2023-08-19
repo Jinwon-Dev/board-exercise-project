@@ -13,7 +13,7 @@
 
 게시글 등록, 게시글 단건 + 목록 조회, 수정, 삭제 API를 개발하였습니다.
 
-아키텍처는 레이어드 아키텍처를 사용하였고, Junit과 Mockito를 이용한 도메인별 단위 & 통합 테스트를 총 52개 작성하였습니다.
+아키텍처는 레이어드 아키텍처를 사용하였고, Junit5와 Mockito를 이용한 도메인별 단위 & 통합 테스트를 총 52개 작성하였습니다.
 
 </br>
 
@@ -21,9 +21,12 @@
 1. IDE를 사용하여 실행
   - 실행시 VM Options에 다음 옵션을 추가하여 실행합니다.
     - `Dlog4j2.ContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector`
+  <img width="886" alt="image" src="https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/d638c8f4-a16f-4db2-8d9d-94f5da65caa9">
+  <img width="841" alt="스크린샷 2023-08-20 오전 12 26 24" src="https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/ab8299e0-72c9-4d70-a8cb-43711de7fd6e">
 
 2. Terminal에서 실행
-  - 애플리케이션 빌드 후 `java -jar homework-0.0.1-SNAPSHOT.jar Dlog4j2.ContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector`
+  - 애플리케이션 빌드 후 `java -jar Dlog4j2.ContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector homework-0.0.1-SNAPSHOT.jar`
+    ![스크린샷 2023-08-20 오전 12 33 18](https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/32162327-ef08-4217-8a6c-d7a27c7eb013)
 
 </br>
 
@@ -63,7 +66,7 @@
 
 > ***Flow Chart***
 
-![flow-chart](https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/e2ab0cff-bca6-4c73-96f3-f996c0265a5d)
+![flow-chart](https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/0782eb6e-bf1b-4273-af67-7aab0855d24c)
 
 </br>
 </br>
@@ -91,7 +94,7 @@
   - Java 17
 - FrameWork
   - SpringBoot 3.1.2
-  - Junit
+  - Junit5
   - Mockito
 - Database
   - PostgreSQL
