@@ -1,5 +1,14 @@
 # board-exercise-project
 
+> 소스 코드는 [Github Repository](https://github.com/Jinwon-Dev/board-exercise-project)에서 관리하였으며, 이슈 또한 [Github Issue](https://github.com/Jinwon-Dev/board-exercise-project/issues)로 관리하였습니다.
+> 
+> Flow Chart, Sequence Diagram, E-R Diagram은 [Draw.io](http://draw.io/)를 이용하여 작성하였습니다.
+> 
+> 자세한 기록 및 이슈는 [Github](https://github.com/Jinwon-Dev/board-exercise-project)에서 볼 수 있습니다.
+
+</br>
+</br>
+
 > ***Introduction***
 
 게시글 등록, 게시글 단건 + 목록 조회, 수정, 삭제 API를 개발하였습니다.
@@ -25,9 +34,10 @@
 </br>
 
 추가적으로 Jacoco를 사용해 테스트 커버리지를 확인할 수 있습니다.
-현재는 92%의 테스트 커버리지를 기록중입니다.
 
-<img width="1147" alt="image" src="https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/e436f67f-e985-40c8-898a-5f453abe51d5">
+***현재는 92%의 테스트 커버리지를 기록중입니다.***
+
+![img.png](img.png)
 
 </br>
 </br>
@@ -53,21 +63,21 @@
 
 > ***Flow Chart***
 
-![flow-chart](https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/8332c549-03e0-4900-83c9-7e94d76d5263)
+![flow-chart](https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/e2ab0cff-bca6-4c73-96f3-f996c0265a5d)
 
 </br>
 </br>
 
 > ***Sequence Diagram***
 
-![sequence-diagram](https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/6a9e860a-cb75-4ba9-949d-6eebaae4dbde)
+![sequence-diagram](https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/e2f8c334-b784-40bb-90e3-eedcf7bf27cb)
 
 </br>
 </br>
 
 > ***E-R Diagram***
 
-![er-diagram](https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/8758d0d2-796f-420c-82fd-605f356dbff2)
+![er-diagram](https://github.com/Jinwon-Dev/board-exercise-project/assets/106216912/0d852b97-939d-4506-9e02-b3cedee88255)
  
 </br>
 </br>
