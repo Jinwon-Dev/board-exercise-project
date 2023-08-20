@@ -38,6 +38,6 @@ public class MemberIdResolver implements HandlerMethodArgumentResolver {
             throw AuthExceptionExecutor.UnAuthorized();
         }
 
-        return jwtTokenProvider.decodeAccessToken(token);
+        return jwtTokenProvider.decodeMemberId(token);
     }
 }

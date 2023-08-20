@@ -34,7 +34,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Long decodeAccessToken(final String accessToken) {
+    public Long decodeMemberId(final String accessToken) {
 
         return Jwts.parser()
                 .setSigningKey(secretKey.getBytes())
