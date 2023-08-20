@@ -3,11 +3,11 @@ package com.mailplug.homework.domain.post.persistence;
 import com.mailplug.homework.domain.BaseTimeEntity;
 import com.mailplug.homework.domain.board.persistence.Board;
 import com.mailplug.homework.domain.member.persistence.Member;
+import com.mailplug.homework.global.exception.post.PostExceptionExecutor;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static com.mailplug.homework.global.exception.post.PostExceptionExecutor.WriterForbidden;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -68,11 +68,11 @@ public class Post extends BaseTimeEntity {
      */
     public void update(final Long memberId, final String title, final String content) {
 
-        if (memberId.equals(this.member.getId())) {
-            this.title = title;
-            this.content = content;
-        } else {
-            throw WriterForbidden();
+        if (!memberId.equals(this.member.getId())) {
+            throw PostExceptionExecutor.WriterForbidden();
         }
+
+        this.title = title;
+        this.content = content;
     }
 }

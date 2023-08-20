@@ -17,8 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.mailplug.homework.global.exception.post.PostExceptionExecutor.*;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -108,13 +106,11 @@ public class PostService {
         final Post post = postRepository.findById(postId)
                 .orElseThrow(PostExceptionExecutor::PostNotFound);
 
-        if (memberId.equals(post.getMember().getId())) {
-
-            postRepository.delete(post);
-            return postMapper.entityToDeletePostResponse(post);
-
-        } else {
-            throw WriterForbidden();
+        if (!memberId.equals(post.getMember().getId())) {
+            throw PostExceptionExecutor.WriterForbidden();
         }
+
+        postRepository.delete(post);
+        return postMapper.entityToDeletePostResponse(post);
     }
 }

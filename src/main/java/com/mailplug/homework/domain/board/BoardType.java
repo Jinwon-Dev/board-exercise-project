@@ -2,11 +2,10 @@ package com.mailplug.homework.domain.board;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.mailplug.homework.global.exception.board.BoardExceptionExecutor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
-
-import static com.mailplug.homework.global.exception.board.BoardExceptionExecutor.BoardTypeInvalid;
 
 @RequiredArgsConstructor
 @Getter
@@ -20,12 +19,12 @@ public enum BoardType {
     @JsonCreator
     public static BoardType fromString(final String value) {
 
-        if (!StringUtils.hasText(value)) throw BoardTypeInvalid();
+        if (!StringUtils.hasText(value)) throw BoardExceptionExecutor.BoardTypeInvalid();
 
         try {
             return BoardType.valueOf(value.toUpperCase());
         } catch (final IllegalArgumentException exception) {
-            throw BoardTypeInvalid();
+            throw BoardExceptionExecutor.BoardTypeInvalid();
         }
     }
 }

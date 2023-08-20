@@ -1,5 +1,6 @@
 package com.mailplug.homework.global.resolver;
 
+import com.mailplug.homework.global.exception.auth.AuthExceptionExecutor;
 import com.mailplug.homework.global.security.AuthorizationExtractor;
 import com.mailplug.homework.global.security.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import static com.mailplug.homework.global.exception.auth.AuthExceptionExecutor.UnAuthorized;
 
 @Component
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class MemberIdResolver implements HandlerMethodArgumentResolver {
         final String token = extractor.extract(request, "Bearer");
 
         if (!StringUtils.hasText(token)) {
-            throw UnAuthorized();
+            throw AuthExceptionExecutor.UnAuthorized();
         }
 
         return jwtTokenProvider.decodeAccessToken(token);
