@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 import java.util.HashSet;
 import java.util.Set;
 
-import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@NoArgsConstructor(access = PROTECTED)
 @Getter
+@NoArgsConstructor(access = PROTECTED)
 public class Board extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)

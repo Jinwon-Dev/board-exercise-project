@@ -14,8 +14,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@NoArgsConstructor(access = PROTECTED)
 @Getter
+@NoArgsConstructor(access = PROTECTED)
 public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)

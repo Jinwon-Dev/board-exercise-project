@@ -1,11 +1,11 @@
 package com.mailplug.homework.global.exception;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BusinessException extends RuntimeException {
 
     private final ErrorType errorType;

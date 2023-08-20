@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 
-@RequiredArgsConstructor
 @Getter
+@RequiredArgsConstructor
 @JsonDeserialize(using = BoardTypeDeserializer.class)
 public enum BoardType {
 
