@@ -3,7 +3,6 @@ package com.mailplug.homework.domain.member.persistence;
 import com.mailplug.homework.domain.BaseTimeEntity;
 import com.mailplug.homework.domain.post.persistence.Post;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.REMOVE;
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -31,7 +30,6 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = REMOVE)
     private Set<Post> posts = new HashSet<>();
 
-    @Builder
     public Member(final String email, final String password) {
         this.email = email;
         this.password = password;
