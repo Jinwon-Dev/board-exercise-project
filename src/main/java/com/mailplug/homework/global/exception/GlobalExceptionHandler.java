@@ -4,13 +4,12 @@ import com.mailplug.homework.global.response.CommonResponse;
 import com.mailplug.homework.global.response.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,21 +29,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
 
-        final List<String> globalErrors = exception.getGlobalErrors().stream()
-                .map(ObjectError::getDefaultMessage)
-                .toList();
+        final Map<String, String> errors = new HashMap<>();
 
-        final List<String> fieldErrors = exception.getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
-                .toList();
+        exception.getBindingResult()
+                .getAllErrors()
+                .forEach(error -> errors.put(((FieldError) error).getField(), error.getDefaultMessage()));
 
-        final List<String> allErrors = new ArrayList<>();
-        allErrors.addAll(globalErrors);
-        allErrors.addAll(fieldErrors);
+        final String strErrors = String.valueOf(errors);
 
-        final String message = String.join(", ", allErrors);
-
-        return buildResponse(ErrorType.dtoInvalid(message));
+        return buildResponse(ErrorType.dtoInvalid(strErrors));
     }
 
     private ResponseEntity<CommonResponse> buildResponse(final ErrorType errorType) {
