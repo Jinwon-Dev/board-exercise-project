@@ -18,7 +18,7 @@ public class MemberMapper {
     @Value("${bcrypt.secret.salt}")
     private String salt;
 
-    public Member createMemberFromRequest(final SignUpRequest request) {
+    public Member signUpRequestToEntity(final SignUpRequest request) {
 
         return new Member(
                 request.email(),
@@ -26,12 +26,12 @@ public class MemberMapper {
         );
     }
 
-    public SignUpResponse entityToMemberSignUpResponse(final Member member) {
+    public SignUpResponse entityToSignUpResponse(final Member member) {
 
         return new SignUpResponse(member.getId(), member.getEmail());
     }
 
-    public LoginResponse mapToLoginResponse(final Member member, final String accessToken) {
+    public LoginResponse entityToLoginResponse(final Member member, final String accessToken) {
 
         final String tokenType = "bearer";
         final String email = member.getEmail();

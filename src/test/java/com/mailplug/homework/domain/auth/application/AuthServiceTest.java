@@ -61,13 +61,13 @@ class AuthServiceTest {
                     request.email(),
                     encryptHelper.encrypt(request.password(), "test")
             );
-            given(memberMapper.createMemberFromRequest(request)).willReturn(mockMember);
+            given(memberMapper.signUpRequestToEntity(request)).willReturn(mockMember);
 
-            final var member = memberMapper.createMemberFromRequest(request);
+            final var member = memberMapper.signUpRequestToEntity(request);
             given(memberRepository.existsByEmail(request.email())).willReturn(false);
 
             final var mockResponse = new SignUpResponse(1L, member.getEmail());
-            given(memberMapper.entityToMemberSignUpResponse(any())).willReturn(mockResponse);
+            given(memberMapper.entityToSignUpResponse(any())).willReturn(mockResponse);
 
             // when
             final var response = authService.signUp(request);
@@ -89,8 +89,8 @@ class AuthServiceTest {
                     encryptHelper.encrypt(request.password(), "test")
             );
 
-            given(memberMapper.createMemberFromRequest(request)).willReturn(mockMember);
-            memberMapper.createMemberFromRequest(request);
+            given(memberMapper.signUpRequestToEntity(request)).willReturn(mockMember);
+            memberMapper.signUpRequestToEntity(request);
 
             given(memberRepository.existsByEmail(request.email())).willReturn(true);
 
@@ -123,7 +123,7 @@ class AuthServiceTest {
                     "accessToken",
                     "bearer"
             );
-            given(memberMapper.mapToLoginResponse(member, "accessToken")).willReturn(mockResponse);
+            given(memberMapper.entityToLoginResponse(member, "accessToken")).willReturn(mockResponse);
 
             // when
             final var response = authService.login(request);

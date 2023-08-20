@@ -32,10 +32,10 @@ public class AuthService {
             throw MemberExceptionExecutor.EmailOverlap();
         }
 
-        final Member member = memberMapper.createMemberFromRequest(request);
+        final Member member = memberMapper.signUpRequestToEntity(request);
         memberRepository.save(member);
 
-        return memberMapper.entityToMemberSignUpResponse(member);
+        return memberMapper.entityToSignUpResponse(member);
     }
 
     public LoginResponse login(final LoginRequest request) {
@@ -48,6 +48,6 @@ public class AuthService {
         }
 
         final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
-        return memberMapper.mapToLoginResponse(member, accessToken);
+        return memberMapper.entityToLoginResponse(member, accessToken);
     }
 }

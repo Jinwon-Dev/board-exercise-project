@@ -70,7 +70,7 @@ public class AuthIntegrationTest extends IntegrationTest {
                         "test1234"
                 );
 
-                final Member member = memberMapper.createMemberFromRequest(request);
+                final Member member = memberMapper.signUpRequestToEntity(request);
                 memberRepository.save(member);
 
                 final var loginRequest = new LoginRequest(request.email(), request.password());
