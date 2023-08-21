@@ -12,6 +12,8 @@ import com.mailplug.homework.global.exception.board.BoardExceptionExecutor;
 import com.mailplug.homework.global.exception.member.MemberExceptionExecutor;
 import com.mailplug.homework.global.exception.post.PostExceptionExecutor;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PostService {
+
+    private final Logger logger = LoggerFactory.getLogger(PostService.class);
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
@@ -44,6 +48,8 @@ public class PostService {
 
         postRepository.save(post);
 
+        logger.info("{}회원의 게시글 작성에 성공하였습니다.", memberId);
+
         return postMapper.entityToWritePostResponse(post);
     }
 
@@ -58,6 +64,8 @@ public class PostService {
 
         post.increaseView();
 
+        logger.info("{}게시글 조회에 성공하였습니다.", postId);
+
         return postMapper.entityToReadPostResponse(post);
     }
 
@@ -67,6 +75,9 @@ public class PostService {
     public Page<ReadPostListResponse> readPostList(final BoardType boardType, final Pageable pageable) {
 
         final Page<Post> posts = postRepository.findAllPostsByBoardName(boardType, pageable);
+
+        logger.info("{}게시판의 게시글 목록 조회에 성공하였습니다.", boardType);
+
         return postMapper.entityToReadPostListResponse(posts);
     }
 
@@ -76,6 +87,9 @@ public class PostService {
     public Page<ReadPostListResponse> readPostListByPostTitle(final String keyword, final Pageable pageable) {
 
         final Page<Post> posts = postRepository.findAllPostsByPostTitle(keyword, pageable);
+
+        logger.info("{}가 포함된 게시글 검색에 성공하였습니다.", keyword);
+
         return postMapper.entityToReadPostListResponse(posts);
     }
 
@@ -94,6 +108,8 @@ public class PostService {
                 request.content()
         );
 
+        logger.info("{}회원의 {}게시글 수정에 성공하였습니다.", memberId, postId);
+
         return postMapper.entityToUpdatePostResponse(post);
     }
 
@@ -111,6 +127,9 @@ public class PostService {
         }
 
         postRepository.delete(post);
+
+        logger.info("{}회원의 {}게시글 삭제에 성공하였습니다.", memberId, postId);
+
         return postMapper.entityToDeletePostResponse(post);
     }
 }

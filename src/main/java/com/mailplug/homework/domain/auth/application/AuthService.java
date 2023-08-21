@@ -12,6 +12,8 @@ import com.mailplug.homework.global.exception.member.MemberExceptionExecutor;
 import com.mailplug.homework.global.security.EncryptHelper;
 import com.mailplug.homework.global.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AuthService {
+
+    private final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -35,6 +39,8 @@ public class AuthService {
         final Member member = memberMapper.signUpRequestToEntity(request);
         memberRepository.save(member);
 
+        logger.info("{}회원의 회원가입에 성공하였습니다.", member.getId());
+
         return memberMapper.entityToSignUpResponse(member);
     }
 
@@ -48,6 +54,9 @@ public class AuthService {
         }
 
         final String accessToken = jwtTokenProvider.createAccessToken(member.getId());
+
+        logger.info("{}회원의 로그인에 성공하였습니다.", member.getId());
+
         return memberMapper.entityToLoginResponse(member, accessToken);
     }
 }
